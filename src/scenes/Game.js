@@ -26,60 +26,57 @@ export class Game extends Scene {
         this.cameras.main.setBounds(0, 0, gameConfig.canvasSize, gameConfig.canvasSize).setName('main');
 
         // Cambiar el tamaño del minimapa a 500x300
-        // this.minimap = this.cameras.add(0, 570, 150, 150).setZoom(0.19).setName('mini');
-        // this.minimap.setBackgroundColor(0x002244);
-        // this.minimap.scrollX = gameConfig.canvasSize;
-        // this.minimap.scrollY = gameConfig.canvasSize;
-
+        // Para cambiar el nivel de zoom out se altera el valor de setZoom, entre más pequeño el valor, más zoom
+        this.minimap = this.cameras.add(0, this.cameras.main.height - 300, 300, 300).setZoom(0.19).setName('mini');
+        this.minimap.setBackgroundColor(0x002244);
 
         // Create the static point at the center of the map
         const centerX = gameConfig.canvasSize / 2; // 35000
         const centerY = gameConfig.canvasSize / 2; // 35000
         
-        // Orbiting object
-        // this.add.circle(centerX, centerY, 325, 0xffff00); // Sol
-        this.add.image(centerX,centerY,'sun')
-        this.mercury = this.add.image(centerX,centerY,'mercury').setScale(0.25); 
-        this.venus = this.add.image(centerX,centerY,'venus').setScale(0.5); 
-        this.earth = this.add.image(centerX,centerY,'earth').setScale(0.1); 
-        this.mars = this.add.image(centerX,centerY,'mars').setScale(0.20);  
-        this.jupiter = this.add.image(centerX,centerY,'jupiter').setScale(0.5);   
-        this.saturn = this.add.image(centerX,centerY,'saturn').setScale(0.9);   
+        // Orbiting objects (planets)
+        this.add.image(centerX, centerY, 'sun'); // Sun at the center
+        this.mercury = this.add.image(centerX, centerY, 'mercury').setScale(0.25);
+        this.venus = this.add.image(centerX, centerY, 'venus').setScale(0.5);
+        this.earth = this.add.image(centerX, centerY, 'earth').setScale(0.1);
+        this.mars = this.add.image(centerX, centerY, 'mars').setScale(0.20);
+        this.jupiter = this.add.image(centerX, centerY, 'jupiter').setScale(0.5);
+        this.saturn = this.add.image(centerX, centerY, 'saturn').setScale(0.9);
 
         this.orbitAngle = 0; // Start angle
-        this.orbitRadius = 150; // Distance from the center (radius of the orbit)
 
         this.createStarfield();
 
         // Añadir nave del jugador y configurar física
         this.player = this.matter.add.sprite(gameConfig.canvasSize / 2 - 30, gameConfig.canvasSize / 2, 'ship')
             .setFixedRotation(false)
-            .setFrictionAir(0.3)
+            .setFrictionAir(0.5)
             .setMass(30)
-            .setScale(0.2);
+            .setScale(0.1);
+
+        // Follow player with the main camera
         this.cameras.main.startFollow(this.player, false, 0.2, 0.2);
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Crear el sprite para la nave en el minimapa
-        this.playerMinimap = this.add.sprite(0, 0, 'ship').setScale(0.1); // Cambia el tamaño si es necesario
+        // Set the minimap to follow the player
+        this.minimap.startFollow(this.player);
 
-        
+        // Ensure player is visible on the minimap
+        this.minimap.scrollX = this.player.x - this.minimap.width / 2;
+        this.minimap.scrollY = this.player.y - this.minimap.height / 2;
     }
 
     update() {
-
-        this.playerUpdate()
-        // this.minimapUpdate()
-        this.updateOrbit(this.mercury, 400)
-        this.updateOrbit(this.venus, 600)
-        this.updateOrbit(this.earth, 900)
-        this.updateOrbit(this.mars, 1200)
-        this.updateOrbit(this.jupiter, 1800)
-        this.updateOrbit(this.saturn, 2700)
+        this.playerUpdate();
+        this.updateMinimap();
+        this.updateOrbit(this.mercury, 400);
+        this.updateOrbit(this.venus, 600);
+        this.updateOrbit(this.earth, 900);
+        this.updateOrbit(this.mars, 1200);
+        this.updateOrbit(this.jupiter, 1800);
+        this.updateOrbit(this.saturn, 2700);
     }
-
-
 
     createStarfield() {
         // Crear el fondo de estrellas
@@ -95,12 +92,10 @@ export class Game extends Scene {
                 sf = 0.2;
             }
             child.setScrollFactor(sf);
-            // this.minimap.ignore(child); // Ignorar objetos en el minimapa
         }, this);
     }
 
     playerUpdate() {
-        console.log(this.player.x)
         if (this.cursors.left.isDown) {
             this.player.setAngularVelocity(-0.05);  // Rotate left
         } else if (this.cursors.right.isDown) {
@@ -111,33 +106,15 @@ export class Game extends Scene {
 
         // Thrust the ship forward in the direction it is facing
         if (this.cursors.up.isDown) {
-            this.player.thrust(0.1);  // Apply thrust forward
+            this.player.thrust(0.05);  // Apply thrust forward
         } else if (this.cursors.down.isDown) {
-            this.player.thrustBack(0.1);  // Apply thrust backward (optional)
+            this.player.thrustBack(0.05);  // Apply thrust backward (optional)
         }
-        // else
-        //     {
-        //         this.player.setAngularVelocity(0); // Detener rotación si no se presiona nada
-        //     }
-
-        // if (this.cursors.up.isDown)
-        //     {
-        //         // Calcular la dirección en la que la nave está orientada
-        //         const angle = this.player.rotation;
-
-        //         // Aplicar una fuerza en la dirección de la rotación
-        //         const force = 0.5; // Puedes ajustar este valor para más o menos velocidad
-        //         const forceX = Math.cos(angle) * force;
-        //         const forceY = Math.sin(angle) * force;
-
-        //         // Aplicar la fuerza en la dirección actual de la rotación
-        //         this.player.applyForce({ x: forceX, y: forceY });
-        //     }
     }
 
-    minimapUpdate() {
-        this.minimap.scrollX = Phaser.Math.Clamp(this.player.x, 300, gameConfig.canvasSize);
-        this.minimap.scrollY = Phaser.Math.Clamp(this.player.y, 300, gameConfig.canvasSize);
+    updateMinimap() {
+        this.minimap.scrollX = Phaser.Math.Clamp(this.player.x - this.minimap.width / 2, 0, gameConfig.canvasSize);
+        this.minimap.scrollY = Phaser.Math.Clamp(this.player.y - this.minimap.height / 2, 0, gameConfig.canvasSize);
     }
 
     updateOrbit(orbitingObject, orbitRadius) {
@@ -153,5 +130,4 @@ export class Game extends Scene {
         // Update the position of the orbiting object
         orbitingObject.setPosition(orbitX, orbitY);
     }
-
 }
