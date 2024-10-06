@@ -14,6 +14,8 @@ export class Game extends Phaser.Scene
         this.load.image('ship', 'assets/rocket.png');
     }
 
+    //test
+
     create () {
     //  El mundo es de 70000 x 70000
     this.matter.world.setBounds(0, 0, 70000, 70000);
