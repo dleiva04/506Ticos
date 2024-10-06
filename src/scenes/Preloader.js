@@ -11,12 +11,12 @@ export class Preloader extends Scene {
 
     preload() {
         this.load.setPath('assets');
-
+        
         // load all main menu assets
 
     }
 
     create() {
-        this.scene.start('MainMenu');
+        this.scene.start('Game');
     }
 }

@@ -5,18 +5,29 @@ import { Preloader } from './scenes/Preloader';
 
 const config = {
     type: Phaser.WEBGL,
-    width: game_width,
-    height: game_height,
+    width: 1280,
+    height: 720,
     parent: 'game-container',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    physics: {
+        default: 'matter',
+        matter: {
+            gravity: {
+                x: 0,
+                y: 0
+            },
+            enableSleeping: true
+        }
+    },
     scene: [
         Boot,
         Preloader,
-        Game,
-        MainMenu
+        MainMenu,
+        Game
+        
     ]
 };
 
