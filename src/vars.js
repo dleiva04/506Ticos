@@ -4,7 +4,7 @@ export const gameWindow = {
 }
 
 export const gameConfig = {
-    canvasSize: 35000,
+    canvasSize: 55000,
 }
 
 export const planetData = {
@@ -36,6 +36,16 @@ export const planetData = {
     saturn: { 
         orbitRadius: 16000, 
         speed: 0.0025 * (1 / 29.46),  // Saturn orbits ~0.034x the speed of Earth
+        startAngle: Math.random() * 2 * Math.PI 
+    },
+    uranus: { 
+        orbitRadius: 20000, 
+        speed: 0.0025 * (1 / 84.01),  // Uranus orbits ~0.012x the speed of Earth
+        startAngle: Math.random() * 2 * Math.PI 
+    },
+    neptune: { 
+        orbitRadius: 25000, 
+        speed: 0.0025 * (1 / 164.8),  // Neptune orbits ~0.006x the speed of Earth
         startAngle: Math.random() * 2 * Math.PI 
     },
     moon: { 

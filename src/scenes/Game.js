@@ -17,29 +17,30 @@ export class Game extends Scene {
         this.load.image('mars', 'assets/mars.png');
         this.load.image('jupiter', 'assets/jupiter.png');
         this.load.image('saturn', 'assets/saturn.png');
+        this.load.image('uranus', 'assets/uranus.png'); // Preload the image for Uranus
+        this.load.image('neptune', 'assets/neptune.png'); // Preload the image for Neptune
         this.load.audio('backgroundMusic2', 'assets/backgroundMusic2.mp3');
         this.load.image('title', 'assets/title.png');
     }
 
     create() {
-
         // Add music
         const music = this.sound.add('backgroundMusic2', { loop: true, volume: 0.1 });
         music.play();
-    
+
         // Set the world bounds
         this.matter.world.setBounds(0, 0, gameConfig.canvasSize, gameConfig.canvasSize);
         this.cameras.main.setBounds(0, 0, gameConfig.canvasSize, gameConfig.canvasSize).setName('main');
-    
+
         // Create minimap
         this.minimap = this.cameras.add(0, this.cameras.main.height - 300, 300, 300).setZoom(0.05).setName('mini');
         this.minimap.setBackgroundColor(0x002244);
-    
+
         // Draw orbits
         const centerX = gameConfig.canvasSize / 2;
         const centerY = gameConfig.canvasSize / 2;
         this.drawOrbits(centerX, centerY);
-    
+
         // Create the sun and planets
         const sun = this.add.image(centerX, centerY, 'sun');
         sun.setDisplaySize(6955, 6955);
@@ -51,7 +52,9 @@ export class Game extends Scene {
         this.mars = this.add.image(centerX, centerY, 'mars').setScale(0.20).setDisplaySize(203.4, 159.2);
         this.jupiter = this.add.image(centerX, centerY, 'jupiter').setScale(0.5).setDisplaySize(4194.6, 4194.6);
         this.saturn = this.add.image(centerX, centerY, 'saturn').setScale(0.9).setDisplaySize(6000, 2500);
-    
+        this.uranus = this.add.image(centerX, centerY, 'uranus').setScale(0.7).setDisplaySize(2559, 2559); // Add Uranus
+        this.neptune = this.add.image(centerX, centerY, 'neptune').setScale(0.7).setDisplaySize(2476, 2476); // Add Neptune
+
         // Add labels for each planet
         this.labels = {
             mercury: this.add.text(0, 0, 'Mercury', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5),
@@ -59,11 +62,14 @@ export class Game extends Scene {
             earth: this.add.text(0, 0, 'Earth', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5),
             mars: this.add.text(0, 0, 'Mars', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5),
             jupiter: this.add.text(0, 0, 'Jupiter', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5),
-            saturn: this.add.text(0, 0, 'Saturn', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5)
+            saturn: this.add.text(0, 0, 'Saturn', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5),
+            uranus: this.add.text(0, 0, 'Uranus', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5), // Add label for Uranus
+            neptune: this.add.text(0, 0, 'Neptune', { fontSize: '400px', fill: '#fff' }).setOrigin(0.5) // Add label for Neptune
         };
-    
+
         this.orbitAngle = 0; 
         this.createStarfield();
+
         // Position the ship near Earth
         const earthOrbitRadius = planetData.earth.orbitRadius; 
         const earthStartAngle = planetData.earth.startAngle;
@@ -88,7 +94,6 @@ export class Game extends Scene {
         this.minimap.scrollX = this.player.x - this.minimap.width / 2;
         this.minimap.scrollY = this.player.y - this.minimap.height / 2;
     }
-    
 
     update() {
         this.playerUpdate();
@@ -99,6 +104,8 @@ export class Game extends Scene {
         this.updateOrbit(this.mars, planetData.mars, this.labels.mars);
         this.updateOrbit(this.jupiter, planetData.jupiter, this.labels.jupiter);
         this.updateOrbit(this.saturn, planetData.saturn, this.labels.saturn);
+        this.updateOrbit(this.uranus, planetData.uranus, this.labels.uranus); // Update Uranus
+        this.updateOrbit(this.neptune, planetData.neptune, this.labels.neptune); // Update Neptune
     }
 
     createStarfield() {
@@ -153,7 +160,7 @@ export class Game extends Scene {
 
         // Update the planet's label position
         let labelYOffset = 300;
-        if (label.text === 'Jupiter') {
+        if (label.text === 'Jupiter' || label.text === 'Neptune' || label.text === 'Uranus') {
             labelYOffset = 1500; 
         } else if (label.text === 'Saturn') {
             labelYOffset = 1100;  
