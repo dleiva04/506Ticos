@@ -19,7 +19,7 @@ export class MainMenu extends Scene {
 
     create() {
         // Play the background music
-        const music = this.sound.add('backgroundMusic', { loop: true, volume: 0.3 });
+        const music = this.sound.add('backgroundMusic', { loop: true, volume: 0.1 });
         music.play();
 
         // Add the background image and scale it to fill the entire screen

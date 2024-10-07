@@ -49,7 +49,7 @@ export class Game extends Scene {
         this.mercury = this.add.image(centerX, centerY, 'mercury').setScale(0.25).setDisplaySize(146.4, 146.4);
         this.venus = this.add.image(centerX, centerY, 'venus').setScale(0.5).setDisplaySize(363.1, 363.1);
         this.earth = this.add.image(centerX, centerY, 'earth').setScale(0.1).setDisplaySize(382.3, 382.3);
-        this.mars = this.add.image(centerX, centerY, 'mars').setScale(0.20).setDisplaySize(203.4, 159.2);
+        this.mars = this.add.image(centerX, centerY, 'mars').setScale(0.20).setDisplaySize(203.4, 200.2);
         this.jupiter = this.add.image(centerX, centerY, 'jupiter').setScale(0.5).setDisplaySize(4194.6, 4194.6);
         this.saturn = this.add.image(centerX, centerY, 'saturn').setScale(0.9).setDisplaySize(6000, 2500);
         this.uranus = this.add.image(centerX, centerY, 'uranus').setScale(0.7).setDisplaySize(2559, 2559); // Add Uranus
